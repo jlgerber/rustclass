@@ -1,3 +1,6 @@
+# URL
+https://github.com/jlgerber/rustclass
+
 # What is Rust?
 
 Rust advertises itself thusly:
