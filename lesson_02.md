@@ -159,5 +159,101 @@ impl Level {
 }
 ```
 
-### Common enums
-The standard library defines a couple of important enum
+### standard enums
+The standard library defines a couple of very important enums that we will look at now
+
+#### Option
+The first is `Option`. Rust, as I have noted, has no `null`. That much maligned million dollar mistake is not part of Rust. But we need to model the notion of an optional value somehow. So, we do it with an enum. If you are Haskell savvy, you might be saying that is just a `Maybe` monad, and you would be right.
+
+Here is how Option is defined:
+
+```rust
+pub enum Option<T> {
+    Some(T),
+    None
+}
+```
+
+An Option is either Some of something, or None. Option shows off Rust's functional roots by providing the standard functor method `map`. Map lets you operate on the contained data without extracting it, which is a nice convenience.
+
+```rust
+pub fn map<U, F>(self, f: F) -> Option<U> 
+where
+    F: FnOnce(T) -> U;
+```
+Map takes a function that can transform the contents of one type to another, returning a new Option.
+```rust
+impl Level {
+    pub fn to_uppercase(&self) -> Self {
+        match self {
+            Self::Show(show) => Self::Show(show.to_uppercase()),
+            Self::Seq{show,seq} => Self::Seq{show: show.to_uppercase(), seq: seq.to_uppercase()},
+            Self::Shot{show, seq, shot} => Self::Shot{
+                show: show.to_uppercase(), 
+                seq: seq.to_uppercase(), 
+                shot: shot.to_uppercase()
+            }
+        }
+    }
+}
+
+let  level = Some(Level::Shot {
+        show: "dev01".into(),
+        seq: "rd".into(),
+        shot: "0001".into(),
+    });
+
+let new_level = level.map(|x| x.to_uppercase());
+println!("its uppercase {:?}", new_level);
+let level = None;
+let still_none = level.map(|x| x.to_uppercase());
+```
+Rust also lets you `unwrap` the option, extracting the data, if you are certain that it is not None. However, be forwarned, rust will `panic` if you are wrong....
+
+```rust
+let foo: Option<String> = Some("test".into());
+let bar = foo.unwrap();
+// however
+let foo: Option<String> = None;
+foo.unwrap(); //kaboom
+```
+There are other safer convenience functions like `unwrap_or` 
+```rust
+pub fn unwrap_or(self, default: T) -> T
+```
+and `unwrap_or_else`
+```rust
+pub fn unwrap_or_else<F>(self, f: F) -> T where
+    F: FnOnce() -> T, 
+```
+(Notice that the former takes a default value which is greadily evaluated, and the latter takes a function or closure which is lazily evaluated.)
+
+It also has some interesting type manipulation that will come in handy. One of those which you will find yourself needing sooner or later is `as_ref`, which transforms an &Option<T> into an Option<&T>. Pretty handy if you are passing an option around by reference and you want to crack it open and get a reference to its guts.
+
+In fact, there are so many interesting methods, that you should really just consult the documentation. Its good practice for reading function signatures...
+[Option Docs](https://doc.rust-lang.org/std/option/enum.Option.html#methods)
+
+### Result
+The second enum that you will see a lot is Result. Whereas `Option` models an optional value,  `Result` models a value that may either represent a success or a failure. This resembles Haskell's `Either`  monad. The signature is as follows:
+
+```rust
+enum Result<T,E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+This is a big part of Rust's error handling story. Not all mind you, as Rust provides an Error trait that we will look at later.
+But for now, lets examine Result a bit more. Result is used to return from functions that expect to encounter recoverable errors. Because `Result` has two unconstrained generic parameters, you can use any types you fancy.
+
+```rust
+
+fn bad_game(guess: u8) -> Result<&'static str,&'static str> {
+    if guess == 1 {
+        Ok("you did it")
+    } else {
+        Err("you guessed wrong. and that is an error")
+    }
+}
+```
+Of course i really phoned it in here. We dont use String for error types as it has no semantic information. By the way, results must be used
