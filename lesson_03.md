@@ -178,7 +178,7 @@ You might be wondering about now just how much of a pain it is going to be handl
 
 And you would be right, except...
 
-### Introducing the '?' Operator
+### Introducing the '?' Operator 
 Rust has a magic little operator - the question mark. The question mark does a couple of things when operating on a Result.
 
 First, if the result is Ok of something, it unwraps it.
