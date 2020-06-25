@@ -1,10 +1,10 @@
 # Product Types, Sum Types, AKA Tagged Unions, or we've been cheated all these years
 
-One of Rust's great features not really seen outside of functional languages (unless you count union. and you absolutey shouldnt) is the Sum Type. To review watered down set theory as it applies to types, *product types* are those types that combine other types using 'and', and *sum types* combine other types using 'or'.
+One of Rust's great features not really seen outside of functional languages (unless you count union. and you absolutely shouldn't) is the Sum Type. To review watered down set theory as it applies to types, *product types* are those types that combine other types using 'and', and *sum types* combine other types using 'or'.
 
 Product types are meat and potatoes types that you are already used to. Lists, tuples, hashmaps, etc. Yawn.
 
-Sum types, however are a more exotic, and a lot more powerful. In Rust, the type which falls under this category is *enum*. Rust's enum is unike the enum that you are probably used to in c or c++, and have complained about the lack fo in python. Because Rust's enum is a full blown sum type. We will go over all of its great features, but first, lets step back and look at how you create an enum. You do so using the *enum* keyword:
+Sum types, however are a more exotic, and a lot more powerful. In Rust, the type which falls under this category is *enum*. Rust's enum is unlike the enum that you are probably used to in c or c++, and have complained about the lack of in python. Because Rust's enum is a full blown sum type. We will go over all of its great features, but first, lets step back and look at how you create an enum. You do so using the *enum* keyword:
 
 ```rust
 pub enum Level {
@@ -18,7 +18,7 @@ Instantiating a variant is rather simple as well:
 let level = Level::Shot;
 assert_eq!(level,Level::Shot);
 ```
-Ok, well there is nothing particuary exotic there, eh? Kind of run of the mill. But wait, there's more. Because each variant is not limited to a simple name. Each variant may be a struct or a tuplestruct as well.
+Ok, well there is nothing particularly exotic there, eh? Kind of run of the mill. But wait, there's more. Because each variant is not limited to a simple name. Each variant may be a struct or a tuplestruct as well.
 
 ```rust
 pub enum Level {
@@ -62,7 +62,7 @@ Destructuring allows you to extract owned content from containers, as well as re
 
 ## match
 
-The most powerful tool for destructuring uses the `match` keyword. Match is most similar to `switch` in c, although with the addition of pattern matching and the lack of fallthrough
+The most powerful tool for destructuring uses the `match` keyword. Match is most similar to `switch` in c, although with the addition of pattern matching and the lack of fall through
 
 ```rust
 let level = Level::Shot{show: "dev01".into(), seq: "rd".into(), "0001".into()};
@@ -85,7 +85,7 @@ A couple of things to note:
 - Ownership is dictated by the ownership of the variable that you are matching against. If it is owned, you can extract owned components. Otherwise, you will be dealing with references
 - you can explicitly note a reference using the `ref` keyword
 - you can explicitly make the ref mutable by using the `mut ref` keywords, provided the variable is mutable to begin with.
-- match is an expression. Each arm returns the value of the last expression in the branch. You can add parens to group multiple expressions together if you want. If the last statement in the branch ends in a semi-colon, then the return vaue is the unit `()`. 
+- match is an expression. Each arm returns the value of the last expression in the branch. You can add parens to group multiple expressions together if you want. If the last statement in the branch ends in a semi-colon, then the return value is the unit `()`. 
 - you can nest match expressions
 - you can assign the return value to a variable (and often will).
 
@@ -208,7 +208,7 @@ println!("its uppercase {:?}", new_level);
 let level = None;
 let still_none = level.map(|x| x.to_uppercase());
 ```
-Rust also lets you `unwrap` the option, extracting the data, if you are certain that it is not None. However, be forwarned, rust will `panic` if you are wrong....
+Rust also lets you `unwrap` the option, extracting the data, if you are certain that it is not None. However, be forewarned, rust will `panic` if you are wrong....
 
 ```rust
 let foo: Option<String> = Some("test".into());
@@ -226,7 +226,7 @@ and `unwrap_or_else`
 pub fn unwrap_or_else<F>(self, f: F) -> T where
     F: FnOnce() -> T, 
 ```
-(Notice that the former takes a default value which is greadily evaluated, and the latter takes a function or closure which is lazily evaluated.)
+(Notice that the former takes a default value which is greedily evaluated, and the latter takes a function or closure which is lazily evaluated.)
 
 It also has some interesting type manipulation that will come in handy. One of those which you will find yourself needing sooner or later is `as_ref`, which transforms an &Option<T> into an Option<&T>. Pretty handy if you are passing an option around by reference and you want to crack it open and get a reference to its guts.
 
@@ -256,4 +256,4 @@ fn bad_game(guess: u8) -> Result<&'static str,&'static str> {
     }
 }
 ```
-Of course i really phoned it in here. We dont use String for error types as it has no semantic information. By the way, results must be used
+Of course i really phoned it in here. We don't use String for error types as it has no semantic information. By the way, results must be used

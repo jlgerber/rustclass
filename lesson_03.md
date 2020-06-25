@@ -1,5 +1,5 @@
 # Traits
-Last week we looked at *sum types*. We introduced the *enum* keyword, and looked at a couple of common enums in the standard library used to handle two cases - optional values (Option) & falibility (Result). With Result, we started talked about Rust's error handling story. As a reminder, the Result type is defined in terms of two generic parameters, like so:
+Last week we looked at *sum types*. We introduced the *enum* keyword, and looked at a couple of common enums in the standard library used to handle two cases - optional values (Option) & fallibility (Result). With Result, we started talked about Rust's error handling story. As a reminder, the Result type is defined in terms of two generic parameters, like so:
 
 ```rust
 enum Result <Success,Error> {
@@ -33,9 +33,9 @@ means that Error is a supertrait of the Debug and the Display traits. In other w
 ```rust
 pub trait Social: Debug + Display {}
 ```
-The second thing to note is that unlike pure interfaces, a Rust trait may provide a default implmenentation for a trait function. This provides a powerful way of inheriting behaviors. So while Rust does not provide classical OO iheritance, it does provide another means of being lazy. 
+The second thing to note is that unlike pure interfaces, a Rust trait may provide a default implementation for a trait function. This provides a powerful way of inheriting behaviors. So while Rust does not provide classical OO inheritance, it does provide another means of being lazy. 
 
-And getting back to Error, all of the trait's defined functions have default implmentations. Meaning that as long as you define Debug and Display for a type, you can trivially implement Error.
+And getting back to Error, all of the trait's defined functions have default implementations. Meaning that as long as you define Debug and Display for a type, you can trivially implement Error.
 
 Which brings us to another point. How do you implement a trait? The syntax is only a bit different than implementing a struct or enum.
 
@@ -196,7 +196,7 @@ fn get_uri() -> Result<Uri, MyError> {
 }
 ```
 Much better. 
-However, you might be wondering what to do about heterogeneous errors. In the above example, the function is calling other funcitons which all seem to return a MyError instance. However, it is reasonable to assume that in any project, one will include dependencies that themselves define their own errors. How do we deal with that? 
+However, you might be wondering what to do about heterogeneous errors. In the above example, the function is calling other functions which all seem to return a MyError instance. However, it is reasonable to assume that in any project, one will include dependencies that themselves define their own errors. How do we deal with that? 
 
 The first way is to in fact do what we did. Define an error enum and wrap foreign errors. This is a common approach used by library authors. Of course, this still wont magically convert between a foreign error and your error. So Result defines a function called map_err, that lets you map over the result value if the variant is an Error.
 ```rust
@@ -226,9 +226,9 @@ If you do this, then the `?` operator will invoke from on your behalf. (that is 
 
 So, you don't have to use the  `map_err` method, as long as you have a `From` impl.
 
-That is certainly much better, but it still sounds like some work. It isnt always necessary either. Some times, you dont really care about the error type, because you are simply going to present it to the user. You arent going to do anything else fancy. In this case, you may simply return an error trait object.
+That is certainly much better, but it still sounds like some work. It isn't always necessary either. Some times, you don't really care about the error type, because you are simply going to present it to the user. You aren't going to do anything else fancy. In this case, you may simply return an error trait object.
 
-If you recall from a last week, when talkng about generics, I mentioned that there were two ways of dealing with generics. The first an most prevelant is the standard, monomorphised generic. Eg
+If you recall from a last week, when talking about generics, I mentioned that there were two ways of dealing with generics. The first an most prevalent is the standard, monomorphised generic. Eg
 ```
 pub enum foo<T> {
     Foo(T)
@@ -248,7 +248,7 @@ fn foo() -> Result<(), Box<dyn Error>> {
 }
 ```
 
-As an aside, if you dont recall, with trait objects, we cannot deal with them directly because the compiler needs to know how big they are at compile time. But they are dynamic. By boxing them (putting then on the heap), the compiler knows their size.
+As an aside, if you don't recall, with trait objects, we cannot deal with them directly because the compiler needs to know how big they are at compile time. But they are dynamic. By boxing them (putting then on the heap), the compiler knows their size.
 
 If you are really paying attention, you might be wondering how Rust handles the Boxing. Like how do we go from a specific error to a box of a dyn error? The stdlib helps in boxing our errors by having Box implement conversion from any type that implements the Error trait into the trait object Box<Error>, via From.
 

@@ -3,7 +3,7 @@ Iterators
 
 
 ## Iterators
-Rust, like python, has iterators. In Rust, iterators are just entities which implement the *Iterator* trait. The iterator trait has a lot of methods, however almost all of them have default impelmentations. In fact, the only method that you have to implement in order to create an iterator is the *next* method. The relevant part of the trait looks like this:
+Rust, like python, has iterators. In Rust, iterators are just entities which implement the *Iterator* trait. The iterator trait has a lot of methods, however almost all of them have default implementations. In fact, the only method that you have to implement in order to create an iterator is the *next* method. The relevant part of the trait looks like this:
 
 ### Iterator Trait
 
@@ -16,7 +16,7 @@ trait Iterator {
 
 An iterator simply returns Some(value) when invoking next() until it is empty, at which point it returns a None. Iterators are used all over the place. In fact, you have been using them for some time.  
 
-Notice that this implies the need to store state. It would be inconvenient and sometimes not possible to implement this directly on anything you want to iterate over. Hence, we often create an iterator tpye that is distinct from the type we iterating over. So how do we get an iterator for a given type? Enter the *IntoIterator* trait. Now this definition is a bit tricky, so lets take a second to soak it in:
+Notice that this implies the need to store state. It would be inconvenient and sometimes not possible to implement this directly on anything you want to iterate over. Hence, we often create an iterator type that is distinct from the type we iterating over. So how do we get an iterator for a given type? Enter the *IntoIterator* trait. Now this definition is a bit tricky, so lets take a second to soak it in:
 
 Here is the trait:
 ### IntoIterator Trait 
@@ -33,7 +33,7 @@ where
 
 Notice that int_iter takes a "self", not a &self. That means it consumes self when called on non references.
 
-What does this all mean? Lets develop an intuition by looking at Vec in the standard library. And specifically the [IntoIterator](https://doc.rust-lang.org/1.25.0/std/vec/struct.Vec.html#impl-IntoIterator) signature. First, we will find that there isnt just one implementation. While Rust does not have function overloading, it does have trait overloading.
+What does this all mean? Lets develop an intuition by looking at Vec in the standard library. And specifically the [IntoIterator](https://doc.rust-lang.org/1.25.0/std/vec/struct.Vec.html#impl-IntoIterator) signature. First, we will find that there isn't just one implementation. While Rust does not have function overloading, it does have trait overloading.
 
 #### For Items
 ```rust
@@ -55,7 +55,7 @@ impl<'a, T> IntoIterator for &'a Vec<T> {
 }
 
 ```
-#### For Mutable Refefrences
+#### For Mutable References
 ```rust
 impl<'a, T> IntoIterator for &'a mut Vec<T> {
   type Item = &'a mut T //The type of the elements being iterated over.
@@ -74,7 +74,7 @@ impl<T> Iterator for IntoIter<T> {
   fn next(&mut self) -> Option<T> {...}
 }
 ```
-So this is interesting. Here we have an impl for all types T. A generic implementation. Which is good, because we wouldnt want to have to implement Iterator for every possible type that a Vec can hold.
+So this is interesting. Here we have an impl for all types T. A generic implementation. Which is good, because we wouldn't want to have to implement Iterator for every possible type that a Vec can hold.
 
 What about usage in practice? Lets see:
 ```rust
@@ -116,7 +116,7 @@ for x in values {
   };
 
 ```
-iterators are lazy. Something needs to drive them. You can use a for loop, but you dont have to. Iterator has a method called *collect*, which can take anything iterable, and turn it into a relevant collection.
+iterators are lazy. Something needs to drive them. You can use a for loop, but you dint have to. Iterator has a method called *collect*, which can take anything iterable, and turn it into a relevant collection.
 
 The most basic pattern in which collect() is used is to turn one collection into another. You take a collection, call into_iter on it, do a bunch of transformations, and then collect() at the end.
 
@@ -141,7 +141,7 @@ fn main() {
 [rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=1badd457be3d8db1c1d1efb1e43f20c8)
 
 ## String vs &str
-Rust provides two distinct types to deal with strings: A String is an owned represnetation of a string, very similar to a std::string in c++. It is growable, and largely heap allocated under the hood. For example:
+Rust provides two distinct types to deal with strings: A String is an owned representation of a string, very similar to a std::string in c++. It is grow-able, and largely heap allocated under the hood. For example:
 ```rust
 let mut s = String::from("Hello Rust");
 s.push_str(". I forgot the period");

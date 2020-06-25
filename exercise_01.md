@@ -5,7 +5,7 @@
 Its time to put all this Rust nonsense to good use. For our first exercise, we are going to build a little LevelSpec api. As a refresher, The LevelSpec should model a level in a job system. To begin with, said level can be one of three things - a show, a Sequence, or a Shot. Because we are talking about a closed set of variants, the best way of modeling this is with an enum. So lets get started...
 
 ## First steps
-**Create a new library project, and name it levelspec**. You remember how to do that, right? In case I havent mentioned it before, to create a library, you use the --lib flag with... that command I have already demonstrated.
+**Create a new library project, and name it levelspec**. You remember how to do that, right? In case I haven't mentioned it before, to create a library, you use the --lib flag with... that command I have already demonstrated.
 
 Your project should look something like this:
 
@@ -34,7 +34,7 @@ So now we have a POD. Lets add some constructor functions for practice. Specific
 2. fn from sequence(show: String, sequence: String) -> Self
 3. fn from_shot(show: String, sequence: String, shot: String) -> Self 
 
-I wont lie to you. It would be nice if Rust supported function overloading. There is nothing philisophical stopping them from adding it. It is just not high on their list.
+I wont lie to you. It would be nice if Rust supported function overloading. There is nothing philosophical stopping them from adding it. It is just not high on their list.
 
 Ok. Now that you have added a minimal api of sorts, lets write some tests.
 
@@ -50,7 +50,7 @@ mod tests {
     }
 }
 ```
-Hopefully, you added your code above this, as opposed to removing it. Otherwise, you have some typing to do. Either way, an explanation is in order. The ``#[cfg(test)]`` is a pragma for the compiler that sets up conditional compilation for the tests module, which is declared on the line below. If we didnt have this pragma, all of the tests within the tests module would be baked into the library, which we dont necessarily want. There is nothing special about the module name by the way. We could call it levelspectests or whatever. Doesnt matter. What does matter is that this module doesnt inherit anything from its parent's scope. So, right under `mod tests` type the following:
+Hopefully, you added your code above this, as opposed to removing it. Otherwise, you have some typing to do. Either way, an explanation is in order. The ``#[cfg(test)]`` is a pragma for the compiler that sets up conditional compilation for the tests module, which is declared on the line below. If we didn't have this pragma, all of the tests within the tests module would be baked into the library, which we don't necessarily want. There is nothing special about the module name by the way. We could call it levelspectests or whatever. Doesn't matter. What does matter is that this module doesn't inherit anything from its parent's scope. So, right under `mod tests` type the following:
 
 ```
 use super::*;
@@ -93,13 +93,13 @@ let result = greeting("foo");
 assert!(result.contains("foo"), "result didn't contain foo. value was `{:?}`", result);
 ```
 
-Ok, with that explanation out of the way, lets create two more tests, one for sequences, and one for shots. For each test, you will have to create a function adorned with `#[test]`. Lets follow the first test and call them "can_create_sequence" and "can_creeate_shot". Populate them with relevant tests. 
+Ok, with that explanation out of the way, lets create two more tests, one for sequences, and one for shots. For each test, you will have to create a function adorned with `#[test]`. Lets follow the first test and call them "can_create_sequence" and "can_create_shot". Populate them with relevant tests. 
 
 After getting your tests to pass, its time to move on to a bit more interesting challenge.
 
 ### LevelSpec from_str
 
-We would like to be able to create a levelspec from a string. Of course, not all strings are valid, so we will want to create a falible funciton to handle this. Fortunately, Rust has a trait that fits the bill. It looks like this:
+We would like to be able to create a levelspec from a string. Of course, not all strings are valid, so we will want to create a fallible function to handle this. Fortunately, Rust has a trait that fits the bill. It looks like this:
 
 ```
 trait FromStr {

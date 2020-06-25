@@ -13,7 +13,7 @@ Rust advertises itself thusly:
 
 Rust is a modern, systems level language whose peers include c and c++. 
 
-It is compiled, strongly typed, with low level access to the underlying hardware, but with certain safety guarantees that c and c++ cannot make. In a nutshell, Rust combines the control of c or c++ with the expressivity and type richness of a Haskell or Ocamel. It is multi-paradigm, or maybe its own paradigm, being neither purely functional, nor classically OO.
+It is compiled, strongly typed, with low level access to the underlying hardware, but with certain safety guarantees that c and c++ cannot make. In a nutshell, Rust combines the control of c or c++ with the expressively and type richness of a Haskell or Ocaml. It is multi-paradigm, or maybe its own paradigm, being neither purely functional, nor classically OO.
 
 ## So what do we have to work with in Rust?
 
@@ -25,7 +25,7 @@ It is compiled, strongly typed, with low level access to the underlying hardware
   - 32 bit - i32 & u32
   - 64 bit - i64 & u64
   - 128 bit - i128 & u128
-  - isize & usize ( per architecure)
+  - isize & usize ( per architecture)
 - bools - true or false
 - floating point types
 - utf8 Strings and slices
@@ -65,7 +65,7 @@ These come in two flavors
 Generics may be constrained by traits - somewhat like c++'s upcoming concepts lite.
 
 ### Lifetimes
-One of Rusts unique features. In order for Rust to provide its sweaping guarantees, it needs a way to track and reason about how long avborrow lives. Rust provides lifetime variables to allow authors to help influence its understanding of lifetime. any variable starting with a tick is a lifetime variable. You will typically see single letter lifetime variables, like `'a`, althought that isnt necessary.
+One of Rusts unique features. In order for Rust to provide its sweeping guarantees, it needs a way to track and reason about how long a borrow lives. Rust provides lifetime variables to allow authors to help influence its understanding of lifetime. any variable starting with a tick is a lifetime variable. You will typically see single letter lifetime variables, like `'a`, although that isn't necessary.
 
 ### Macros
 These are not the "dangerous" c variety. Rather, these are passed through the compiler and maintain type information. 
@@ -187,7 +187,7 @@ let departed = Box::new(String::from("Fred Willard"));
 println!("we recently lost {}", departed);
 ```
 
-Notice that I dont have to do anthing special to dereference the boxed string. In c++, with `unique_ptr`, I would have to call the `get` method to access the data, for example. This bit of magic is handled by the `Deref trait`, which Box implements.
+Notice that I don't have to do anything special to dereference the boxed string. In c++, with `unique_ptr`, I would have to call the `get` method to access the data, for example. This bit of magic is handled by the `Deref trait`, which Box implements.
 
 And note, just like in C++, there is no actual reason to box a String, as it already boxes its data.
 
@@ -217,7 +217,7 @@ println!("His name is {}", &hisname);
 println!("I said my name is {}", &name);
 ```
 ## Mutation
-In c or c++ variables are mutable by default and must be decared const to make them immutable. Rust turns that on its head. Variables are immutable by default, and must be declared otherwise. The following does *not* work:
+In c or c++ variables are mutable by default and must be declared const to make them immutable. Rust turns that on its head. Variables are immutable by default, and must be declared otherwise. The following does *not* work:
 ```rust
 // create an owned string
 let name = String::from("Mr. Meeseeks");
@@ -262,7 +262,7 @@ println!("{}", bar);
 
 ## Flow Control
 ### if/else
-Very similar to other languages except the condition doesnt need to be surrounded by parens:
+Very similar to other languages except the condition doesn't need to be surrounded by parens:
 ```rust
 let n = 5;
 
@@ -377,7 +377,7 @@ fn my_fn(name: &str) -> String {
 }
 ```
 
-Rust is an expression oriented language. By default, all scopes will implicity return the result of their last expression. Semi-colons end the current expression and start a new expression. An empty expression evaluates to the unit `()` value.
+Rust is an expression oriented language. By default, all scopes will implicitly return the result of their last expression. Semi-colons end the current expression and start a new expression. An empty expression evaluates to the unit `()` value.
 
 In the above function, the format! macro is invoked without a semicolon, meaning that the function will implicitly return the format! function's results.
 
@@ -416,7 +416,7 @@ struct LevelSpec {
     shot: string
 }
 ```
-While we are at it, lets add a constructor function. Constructor functions arent a formal part of the language; they are just associated functions that act like constructors in other languages.
+While we are at it, lets add a constructor function. Constructor functions aren't a formal part of the language; they are just associated functions that act like constructors in other languages.
 
 To bind a function to a `struct`, we use the `impl` keyword.
 
@@ -429,7 +429,7 @@ impl LevelSpec {
     }
 }
 ```
-There are some new concepts to take in here. First, we can use `Self` to refer our type, although we dont have to. 
+There are some new concepts to take in here. First, we can use `Self` to refer our type, although we don't have to. 
 
 Second, when a variable name matches the function parameter name, we do not have to explicitly call it out. 
 
@@ -470,13 +470,13 @@ So what is going on here? We define a generic var `T` on the `impl` block, and t
 ```rust
 let mylevel = LevelSpec::new("DEV01", "RD", "0001");
 ```
-## Comming Up
+## Coming Up
 - match statement, pattern matching, destructuring oh my
 - module system
 - enums in detail (aka product types)
 - more on types and generics
 - standard library
-- mutli-threading
+- multi-threading
 - async
 - common crates
   - serde for serialization deserialization
