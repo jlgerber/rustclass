@@ -70,7 +70,7 @@ impl<T: MyMarker> Trait<T> for StructB<T> {
 
 Getting back to the Error trait, and custom errors, typically, library authors will implement at least one error enum for their crate. And, as we have seen, Error is a supertrait of Display and Debug. So lets take a quick look at them. 
 
-But first, a quick note about these two traits. For those of you coming from python (everyone), you can think of Display as being akin to __str__ and Debug as akin to __repr__... kind of. Display's audience is made up of the end users. Debug is intended to aid in debugging your library or program and should provide information in that light.
+But first, a quick note about these two traits. For those of you coming from python (everyone), you can think of Display as being akin to ```__str__``` and Debug as akin to ```__repr__```... kind of. Display's audience is made up of the end users. Debug is intended to aid in debugging your library or program and should provide information in that light.
 
 ## Display Trait
 ```rust
@@ -239,7 +239,7 @@ In the above case, when you fill in the generic variable with a type, the compil
 
 But there is another case - the trait object. A trait object is dynamic. You can have a container contain different underlying types which all implement a particular trait. When operating on said object, you only have access to the trait and supertrait methods fyi. And they are dispatched virtually at runtime. (like c++ virtual methods).
 
-You declare a trait object in return position using the dyn keyword. So, if you want to return a function that can handle any error which implements dyn Error, you do this:
+You declare a trait object in return position using the *dyn* keyword. So, if you want to return a function that can handle any error which implements dyn Error, you do this:
 ```Rust
 fn foo() -> Result<(), Box<dyn Error>> {
     let bla = frobulate()?;

@@ -226,7 +226,9 @@ println!("my name is {}", &name);
 name = String::from("Mr. Meeseeks2");
 println!("Now my name is {}", name);
 ```
-To make it work, we need to declare that name is mutable
+
+To make it work, we need to declare that name is mutable:
+
 ```rust
 // create an owned string
 let mut name = String::from("Mr. Meeseeks");
@@ -236,6 +238,7 @@ name = String::from("Mr. Meeseeks2");
 
 println!("Now my name is {}", name);
 ```
+
 ## References
 In addition to moving the contents of a variable into another variable, you can reference one variable from another using the very familiar (to c/c++) ampersand operator.
 
@@ -299,7 +302,7 @@ while n < 101 {
 ```
 
 ## for and range
-rust uses `..` to mean a half open range, and `..=` for a closed range
+Rust uses `..` to mean a half open range, and `..=` for a closed range
 ```rust
 fn main() {
     // `n` will take the values: 1, 2, ..., 100 in each iteration

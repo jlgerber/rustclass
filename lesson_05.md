@@ -42,7 +42,7 @@ for (key,value) in env::vars() {
 }
 ```
 
-This method will panic if any keo or value in the environment is not valid unicode. There is another call ```env::vars_os``` will return OsString pairs instead, and wont panic. but you have to deal with OsString instead of String.
+This method will panic if any key or value in the environment is not valid unicode. There is another call ```env::vars_os``` will return OsString pairs instead, and wont panic. but you have to deal with OsString instead of String.
 
 ## Arguments 
 
@@ -206,7 +206,8 @@ fn get_info() -> Result<String> {
  ```
 
 ## file system module
-The [std::fs](https://doc.rust-lang.org/std/fs/index.html) module has a bunch of usefull functions
+The [std::fs](https://doc.rust-lang.org/std/fs/index.html) module has a bunch of useful functions
+
 ### cannonicalize a path
 ```
 pub fn canonicalize<P: AsRef<Path>>(path: P) -> Result<PathBuf>

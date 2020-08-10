@@ -154,4 +154,28 @@ A parser combinator is a higher-order function that accepts several parsers as i
 
 Nom is easily the most popular parsing framework in Rust. It is currently on version 5.1.2 and there is a 6.0.0.alpha1 out in the wild as well. You may not have a good feel for Rust crates yet, but let me tell you, that it is pretty amazing to find a crate on the verge of its 6th major version at this point. 
 
-## Task
+## Exercise
+
+Throughout our exploration of Nom, we will be working towards a simple goal. We want to be able to build a parser to handle cfg files, of the sort we find at work (EG platforms.cfg). Here is an example of one of those files:
+```
+[cent6_64]
+architecture = linux_cent6_x86_64
+type = LINUX
+version = LINUX_x86_64_2.6
+legacy = linux_cent6_x86_64
+bits = 64
+status = Current
+python_version = 2.6
+
+[cent7_64]
+architecture = linux_cent7_x86_64
+type = LINUX
+version = LINUX_x86_64_3.10
+legacy = linux_cent7_x86_64
+bits = 64
+status = Current
+python_version = 2.7
+
+```
+As you can see, the cfg format is pretty simple. Each file consists of zero or more sections.
+Each section starts with a ```[header]```, between brackets, followed by one or more ```key = value``` lines

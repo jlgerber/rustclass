@@ -1,7 +1,6 @@
 # Lesson 04
 Iterators
 
-
 ## Iterators
 Rust, like python, has iterators. In Rust, iterators are just entities which implement the *Iterator* trait. The iterator trait has a lot of methods, however almost all of them have default implementations. In fact, the only method that you have to implement in order to create an iterator is the *next* method. The relevant part of the trait looks like this:
 
@@ -31,7 +30,7 @@ where
 }
 ```
 
-Notice that int_iter takes a "self", not a &self. That means it consumes self when called on non references.
+Notice that into_iter takes a "self", not a &self. That means it consumes self when called on non references.
 
 What does this all mean? Lets develop an intuition by looking at Vec in the standard library. And specifically the [IntoIterator](https://doc.rust-lang.org/1.25.0/std/vec/struct.Vec.html#impl-IntoIterator) signature. First, we will find that there isn't just one implementation. While Rust does not have function overloading, it does have trait overloading.
 
@@ -84,7 +83,7 @@ for v in &myvec.into_iter() {
   println!("{}", v);
 }
 ```
-Once we have an iterator, we have access to a ton of trait methods with default implementations. For the python savvy, everything in itertools and more is at your disposal. These methods are for the most part *iterator adapters*. An iterator adapter is a function on an iterator which returns another iterator. Here are some common adapters from the *Iterator* trait:
+Once we have an iterator, we have access to a ton of trait methods with default implementations. For the python savvy, everything in ```itertools``` and more is at your disposal. These methods are for the most part *iterator adapters*. An iterator adapter is a function on an iterator which returns another iterator. Here are some common adapters from the *Iterator* trait:
 
   * map  - returns an iterator which applies a function to each item 
   * filter - returns an iterator which applies a predicate and keep those items that pass
