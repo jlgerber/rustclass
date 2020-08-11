@@ -150,9 +150,107 @@ So where do we go from here? We need to use the right tool for the job if we wan
 You will be happy to learn that at this point, we wont be cracking open said book. We wont even be looking at Rust bindings for lex and yacc.  Instead, we are going to take a look at a crate called "nom", which is one of the most popular parsing frameworks for Rust. It falls into a category of parsers known as parser combinators. 
 
 # Parser Combinators
-A parser combinator is a higher-order function that accepts several parsers as input and returns a new parser as output. Of course higher-order functions are just functions that operate on other functions. We are already familiar with closures in Rust, so that isn't such a big deal. In practice, when employing a parser combinator framework, you write very targeted, small parsers, which you combine into bigger, more capable parsers, until, at some point, you can parse whatever you set out to handle in the first place. They are generally simple to build incrementally, simple to test along the way, and surprisingly performant. 
+A parser combinator is a higher-order function that accepts several parsers as input and returns a new parser as output. Of course higher-order functions are just functions that operate on other functions. We are already familiar with closures in Rust, so that isn't such a big deal. In practice, when employing a parser combinator framework, you write very targeted, small parsers (each responsible for recognizing some small bit), which you combine into bigger, more capable parsers, until, at some point, you can parse whatever you set out to handle in the first place. They are generally simple to build incrementally, simple to test along the way, and surprisingly performant. 
 
 Nom is easily the most popular parsing framework in Rust. It is currently on version 5.1.2 and there is a 6.0.0.alpha1 out in the wild as well. You may not have a good feel for Rust crates yet, but let me tell you, that it is pretty amazing to find a crate on the verge of its 6th major version at this point. 
+
+## Starting Simple
+
+Well lets get started with something really simple. Let's take a look at a trivial parser to recognize text between parentheses. In other words, given a string like ```"( this is the input )"```, we want to extract ```" this is the input"```.
+
+To achieve this we are going to use 3 parsers: 
+- The first will parse open parens 
+- The second will parse input that is not a close paren
+- The third will parse close parens.
+
+And because we are interested in extracting the middle bit between the first and third parser, we will use a combinator that takes three parsers, and returns the result from the middle parser, assuming they all match.
+
+Nom ships with a large number of higher order functions which take some input, and return parsers. Our first order of business will be to find one which will help us match an open paren. Since we want to match a single character, the ```char``` parser is perfect for our first use case. Invoking ```char('(')``` returns a parser that will attempt to parse out an open paren.
+
+Next we want to parse anything which isn't a close parentheses. To do this we will use ```is_not```. This function takes a char as input and returns a parser that will consume input until it encounters the supplied character. So, we want ```is_not(')')```.
+
+Lastly, we want to match the close parentheses itself. So, lets go back to ```char``` and use ```char(')')```.
+
+Now we need a way to combine these parsers sequentially, but discarding the results of the char parsers, since we only want to get at the results of the middle parser - characters that are surrounded by parentheses but are not parenthesis. To do this, we will use the ```delimited``` function, which takes three parsers and returns a parser that applies all three but discards the first and third. This would look something like this:
+
+```rust
+let parser = delimited(
+    char('('),
+    is_not(')'),
+    char(')')
+);
+```
+
+Now that we have the pieces in mind, lets put them all together into a working program:
+
+```rust
+use nom::{
+  IResult,
+  sequence::delimited,
+  character::complete::char,
+  bytes::complete::is_not
+};
+
+fn parens(input: &str) -> IResult<&str, &str> {
+  delimited(char('('), is_not(")"), char(')'))(input)
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let result = parens("( this is a test )")?;
+    println!("{:?}", result);
+    Ok(())
+}
+```
+
+Lets break down ```parens``` a bit.
+
+Parens takes an input &str and returns an IResult<&str, &str>. IResult is a type alias that simplifies a rather more complex Result type. For now, just understand that that the types that you provide to IResult represent the input and output data types of your parser, not the Ok and Err types. Err is predefined by default for you.
+
+```parens``` is made up of three parser instances wrapped in a combinator.
+
+The first parser is ```char('(')```. ```char()``` is a function that takes a character ( a [unicode code scalar value](http://www.unicode.org/glossary/#unicode_scalar_value) ) and returns a parser which operates on a single character of the data and determines whether it matches the supplied character or not. In this case, we are trying to match an open parentheses. 
+
+It should be noted that nom parsers do not have to completely consume the input data. In general if they are successful, they will split the input into two parts: the part that they have no opinion on, and the part that they have successfully parsed. 
+
+In the case of ```char('(')```, here is an example of how it would handle various inputs:
+
+```rust
+// given input return (remainder, parsed)
+"(this is good)" -> Ok("this is good)", "("))
+
+// given unparsable input, return an error with (input, ErrorKind)
+// In otherwords, what gave us trouble, and what parser choked
+"a(this is good)" -> Err(Error(("a(this is good)", Char)))
+```
+
+
+## More on IResult
+
+Here is the type definition for IResult:
+
+```rust
+type IResult<I, O, E = (I, ErrorKind)> = Result<(I, O), Err<E>>;
+```
+To make it a little more readable, here I will expand the type variable names to indicate what their functions are:
+
+```rust
+type IResult<Input, Output, Error =(I, ErrorKind)> = Result<(Input,Output), nom::Err<E>>;
+```
+
+The IResult has three generic parameters:
+- I for the type of the Input data
+- O for the type of the output data
+- E for the type of the error, which defaults to a tuple of Input data, ErrorKind 
+  - ErrorKind is an enum which nom defines and which indicates which parser an error has been encountered in.
+
+The return type when IResult is successful is a tuple - (Input, Output). What it really amounts to is actually ```(Remainder, Consumed)```
+
+The return type when IResult is unsuccessful is, by default, an instance of nom::Err<E>
+ 
+ When you use IResult, you are defining the return types of the return tuple. 
+ ```IResult<&str, &str>``` means that we expect a tuple of &str, where the first element is the remaining &str that was not parsed, and the second tuple is the successful part.
+
+Of course, you can use IResult with a custom error type, however, that is a bit of a sideshow that we wont be looking at for now.
 
 ## Exercise
 
@@ -178,4 +276,80 @@ python_version = 2.7
 
 ```
 As you can see, the cfg format is pretty simple. Each file consists of zero or more sections.
-Each section starts with a ```[header]```, between brackets, followed by one or more ```key = value``` lines
+Each section starts with a ```[header]```, between brackets, followed by one or more ```key = value``` lines.
+
+So, where do we start? Well, it looks like the header and the keys all would typically be deserialized as keys in a map or fields in a struct. That gives me an intuition that they need to be words that start with a letter, followed by letters or numbers. Lets start there.
+
+But first, we will need a project. This project should be a library. Lets call it ```cfgparser```. 
+```
+cargo create --lib cfgparser
+```
+
+### create a parser that parses one or more alphabets followed by numbers and alphabets
+The [nom::character::complete](https://docs.rs/nom/5.1.2/nom/character/complete/index.html) module has a number of parsers for dealing with character data. 
+
+Ok, the first parser listed is ```alpha1```  and its definition is "```Recognizes one or more lowercase and uppercase ASCII alphabetic characters: a-z, A-Z```". That seems like it will do nicely to start us off. A couple parsers down the list, I see ```alphanumeric0``` , parses zero or more numbers or alphabetic characters. Great. That is what we need. 
+
+Now we need a way of combining them. A combinator. Lets go look at [nom::sequence](https://docs.rs/nom/5.1.2/nom/sequence/fn.pair.html), which provides different combinators for sequencing parsers.
+We have two parsers that we want to combine serially. So, ```pair``` seems to fit the bill. Lets hack something together...We will create our first parser -```alphaword``` - because it is a word that starts with a letter. 
+
+Lets create a file for parsing (```parser.rs```) and a file for housing the parsing tests (```parser_test.rs```). Add the parser module to the lib.rs.
+
+In lib.rs:
+```rust
+pub mod parser;
+```
+
+Now lets add the parser_test.rs to parser.rs. Open parser and this to the end:
+
+```rust
+
+#[cfg(test)]
+#[path = "./parser_test.rs"]
+mod test;
+```
+
+This will allow us to load the parser_test contents into our file, but only when we are configured for building tests. 
+
+Ok. lets hop over to our parser_test.rs file and add our first test. 
+
+```rust
+super::*;
+
+#[test]
+fn alphaword_given_a_word_starting_with_a_letter_can_parse() {
+    let result = alphaword("a1foo2");
+    assert_eq!(result, Ok(("","a1foo2")));
+}
+```
+This is the outcome we want. We want to feed in a string, and get back a tuple with no further characters to parse. Lets figure out how to get there. Back to our parser file.
+
+Lets give it a go.
+
+```rust
+use nom::character::complete::alpha1;
+use nom::character::complete::alphanumeric0;
+use nom::IResult;
+
+pub fn alphaword(input: &str) -> IResult<&str, &str> {
+    pair(alpha1, alphanumeric0)
+}
+```
+Ok. Well we are almost there. ```pair``` returns a pair, but we want the results of the parser to be combined somehow. And we don't want to have to allocate additionally to do this. This is a bit of a head scratcher. Let's see what Nom has for us. [nom::combinator::recognize](https://docs.rs/nom/5.1.2/nom/combinator/fn.recognize.html) seems to fit the bill. (I have to admit that this one had me stumped for a bit, until i asked on the forums). 
+
+```rust
+use nom::character::complete::alpha1;
+use nom::character::complete::alphanumeric0;
+use nom::IResult;
+
+pub fn alphaword(input: &str) -> IResult<&str, &str> {
+    recognize(
+        pair(
+            alpha1, 
+            alphanumeric0
+        )
+    )(input)
+}
+```
+
+Lets give our test a go. It should pass. 

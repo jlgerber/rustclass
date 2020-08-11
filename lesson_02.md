@@ -4,7 +4,7 @@ One of Rust's great features not really seen outside of functional languages (un
 
 Product types are meat and potatoes types that you are already used to. Lists, tuples, hashmaps, etc. Yawn.
 
-Sum types, however are a more exotic, and a lot more powerful. In Rust, the type which falls under this category is *enum*. Rust's enum is unlike the enum that you are probably used to in c or c++, and have complained about the lack of in python. Because Rust's enum is a full blown sum type. We will go over all of its great features, but first, lets step back and look at how you create an enum. You do so using the *enum* keyword:
+Sum types, however are more exotic, and a lot more powerful. In Rust, the type which falls under this category is *enum*. Rust's enum is unlike the enum that you are probably used to in c or c++, and have complained about the lack of in python. Because Rust's enum is a full blown sum type. We will go over all of its great features, but first, lets step back and look at how you create an enum. You do so using the *enum* keyword:
 
 ```rust
 pub enum Level {
@@ -228,7 +228,7 @@ pub fn unwrap_or_else<F>(self, f: F) -> T where
 ```
 (Notice that the former takes a default value which is greedily evaluated, and the latter takes a function or closure which is lazily evaluated.)
 
-It also has some interesting type manipulation that will come in handy. One of those which you will find yourself needing sooner or later is `as_ref`, which transforms an &Option<T> into an Option<&T>. Pretty handy if you are passing an option around by reference and you want to crack it open and get a reference to its guts.
+It also has some interesting type manipulation that will come in handy. One of those which you will find yourself needing sooner or later is `as_ref`, which transforms an ```&Option<T>``` into an ```Option<&T>```. Pretty handy if you are passing an option around by reference and you want to crack it open and get a reference to its guts.
 
 In fact, there are so many interesting methods, that you should really just consult the documentation. Its good practice for reading function signatures...
 [Option Docs](https://doc.rust-lang.org/std/option/enum.Option.html#methods)
@@ -256,4 +256,4 @@ fn bad_game(guess: u8) -> Result<&'static str,&'static str> {
     }
 }
 ```
-Of course i really phoned it in here. We don't use String for error types as it has no semantic information. By the way, results must be used
+Of course I really phoned it in here. We don't use String for error types as it has no semantic information. One thing to note is that Rust expects you to use results. That is, you should be checking to see what state they are in (Ok or Err) and handling them appropriately.
