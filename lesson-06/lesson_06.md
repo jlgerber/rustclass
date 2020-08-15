@@ -189,6 +189,10 @@ fn is_workdir(text: &str) -> bool {
     RE.is_match(text)
 }
 ```
+## Homework Part 1
+Now that you have taken a look at regex, why not extend your levelspec implementation to validate the inputs?
+Give it a shot.
+
 # Limitations
 Of course, regular expressions are great, but they have limitations. Most obviously, they can only be used to parse [regular language](https://en.wikipedia.org/wiki/Regular_language)s. So they might do in a pinch to extract or parse something particular, but you aren't going to be writing a general regex parser in Rust or any other language, to parse, say HTML, or C++; Because HTML and C++ are examples of context free grammars, not regular grammars. Don't believe me? I'll lend you my [Dragon book](https://en.wikipedia.org/wiki/Principles_of_Compiler_Design); its just taking up shelf space.
 
@@ -400,3 +404,5 @@ pub fn alphaword(input: &str) -> IResult<&str, &str> {
 ```
 
 Lets give our test a go. It should pass. 
+
+We have made a good start on this. Now its your turn. Keep on going...
