@@ -142,6 +142,53 @@ println!("{:?}",fields);
 ```
 [rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=e664eb49cb4c74f61a4ceecaaad0942a)
 
+## Evaluating Multiple regular expressions with RegexSet
+Let's say that you want to apply a set of regular expressions to text and find out if any of them match? You can do this with RegexSet. 
+```rust
+use regex::RegexSet;
+
+fn is_workdir(text: &str) -> bool {
+    let re = RegexSet::new(&[
+        r"^/dd/shows/(?:\w+/){1,3}user/work\.\w+",
+        r"/dd/dept/\w+/user/work\.\w+"
+    ]).expect("unable to compile regex");
+    re.is_match(text)
+}
+
+fn main()-> Result<(), Box<dyn std::error::Error>> {
+    let paths = ["/dd/dept/software/user/work.jgerber", "/dd/shows/FOOBAR/user/work.jerber",];
+    for path in paths.iter() {
+        println!("path {} is a work dir? {}", &path, is_workdir(&path));
+    }
+}
+```
+[rust playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=53d548bd9c77159646bfe18009edb7dc)
+
+## Performance
+One thing that we have been doing so far is compiling the regex each invocation. We should make the regex static. There is a great crate called lazy_static for this:
+
+One node. The lazy_static crate exposes a proc_macro. Proc Macros have an import quirk. You have to do the following in the root of your crate (lib.rs)
+
+```rust
+#[macro_use]
+extern crate lazy_static
+```
+
+Then to use it, do this:
+```rust
+use lazy_static;
+
+fn is_workdir(text: &str) -> bool {
+    lazy_static!{
+        static ref RE: RegexSet =  RegexSet::new(&[
+            r"^/dd/shows/(?:\w+/){1,3}user/work\.\w+",
+            r"/dd/dept/\w+/user/work\.\w+"
+        ]).expect("unable to compile regex");
+    }
+   
+    RE.is_match(text)
+}
+```
 # Limitations
 Of course, regular expressions are great, but they have limitations. Most obviously, they can only be used to parse [regular language](https://en.wikipedia.org/wiki/Regular_language)s. So they might do in a pinch to extract or parse something particular, but you aren't going to be writing a general regex parser in Rust or any other language, to parse, say HTML, or C++; Because HTML and C++ are examples of context free grammars, not regular grammars. Don't believe me? I'll lend you my [Dragon book](https://en.wikipedia.org/wiki/Principles_of_Compiler_Design); its just taking up shelf space.
 
